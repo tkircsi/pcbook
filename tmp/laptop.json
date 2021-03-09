@@ -1,0 +1,62 @@
+{
+  "id":  "6e11ae4b-eec2-4691-bc7a-c84f54385835",
+  "name":  "Apple MacBook Air 13 Mid 2017 MQD32 Notebook",
+  "brand":  "Apple",
+  "cpu":  {
+    "brand":  "Intel",
+    "name":  "Core i7-10750H",
+    "number_cores":  5,
+    "nnumber_threads":  6,
+    "min_ghz":  2.662313596272548,
+    "max_ghz":  4.716549124724457
+  },
+  "ram":  {
+    "value":  "52",
+    "unit":  "GIGYBYTE"
+  },
+  "gpus":  [
+    {
+      "brand":  "NVIDIA",
+      "name":  "GeForce GT 1030",
+      "min_ghz":  1.4313676945574554,
+      "max_ghz":  1.4675459978564789,
+      "memory":  {
+        "value":  "3",
+        "unit":  "GIGYBYTE"
+      }
+    }
+  ],
+  "storages":  [
+    {
+      "driver":  "SSD",
+      "memory":  {
+        "value":  "596",
+        "unit":  "GIGYBYTE"
+      }
+    },
+    {
+      "driver":  "HDD",
+      "memory":  {
+        "value":  "5",
+        "unit":  "TERABYTE"
+      }
+    }
+  ],
+  "screen":  {
+    "size_inch":  16.859705,
+    "resolution":  {
+      "width":  2062,
+      "height":  1160
+    },
+    "panel":  "IPS",
+    "multitouch":  true
+  },
+  "keyboard":  {
+    "layout":  "AZERTY",
+    "backlit":  false
+  },
+  "weight_kg":  1.3833291110523622,
+  "price_usd":  2396.098909420052,
+  "release_year":  2015,
+  "updated_at":  "2021-03-09T23:20:15.221335Z"
+}
