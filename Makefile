@@ -4,8 +4,11 @@ gen:
 clean:
 	rm pb/*.go
 
-run:
-	go run main.go
+server:
+	go run cmd/server/main.go -port 5000
+
+client:
+	go run cmd/client/main.go -address localhost:5000
 
 test:
 	go test -cover -race ./...

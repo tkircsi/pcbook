@@ -44,6 +44,19 @@ func (s *LaptopServer) CreateLaptop(
 		laptop.Id = id.String()
 	}
 
+	// pretend a long call
+	// time.Sleep(6 * time.Second)
+
+	if ctx.Err() == context.Canceled {
+		log.Println("request is cancelled")
+		return nil, status.Error(codes.Canceled, "request is cancelled")
+	}
+
+	if ctx.Err() == context.DeadlineExceeded {
+		log.Println("deadline is exceeded")
+		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
+	}
+
 	err := s.Store.Save(laptop)
 	if err != nil {
 		code := codes.Internal
