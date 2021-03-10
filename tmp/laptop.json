@@ -1,62 +1,62 @@
 {
-  "id":  "6e11ae4b-eec2-4691-bc7a-c84f54385835",
-  "name":  "Apple MacBook Air 13 Mid 2017 MQD32 Notebook",
-  "brand":  "Apple",
-  "cpu":  {
-    "brand":  "Intel",
-    "name":  "Core i7-10750H",
-    "number_cores":  5,
-    "nnumber_threads":  6,
-    "min_ghz":  2.662313596272548,
-    "max_ghz":  4.716549124724457
+  "id": "aac32be1-a1c6-4589-9f08-7709f983f444",
+  "name": "Dell Inspiron 3501 3501FI3UA1 Notebook",
+  "brand": "Dell",
+  "cpu": {
+    "brand": "AMD",
+    "name": "AMD Ryzen 7 4800HS",
+    "number_cores": 5,
+    "nnumber_threads": 11,
+    "min_ghz": 2.200248478411504,
+    "max_ghz": 4.319846113451695
   },
-  "ram":  {
-    "value":  "52",
-    "unit":  "GIGYBYTE"
+  "ram": {
+    "value": "50",
+    "unit": "GIGYBYTE"
   },
-  "gpus":  [
+  "gpus": [
     {
-      "brand":  "NVIDIA",
-      "name":  "GeForce GT 1030",
-      "min_ghz":  1.4313676945574554,
-      "max_ghz":  1.4675459978564789,
-      "memory":  {
-        "value":  "3",
-        "unit":  "GIGYBYTE"
+      "brand": "AMD",
+      "name": "Radeon RX 5600 XT",
+      "min_ghz": 1.3492274327678329,
+      "max_ghz": 1.5643724274792987,
+      "memory": {
+        "value": "4",
+        "unit": "GIGYBYTE"
       }
     }
   ],
-  "storages":  [
+  "storages": [
     {
-      "driver":  "SSD",
-      "memory":  {
-        "value":  "596",
-        "unit":  "GIGYBYTE"
+      "driver": "SSD",
+      "memory": {
+        "value": "757",
+        "unit": "GIGYBYTE"
       }
     },
     {
-      "driver":  "HDD",
-      "memory":  {
-        "value":  "5",
-        "unit":  "TERABYTE"
+      "driver": "HDD",
+      "memory": {
+        "value": "6",
+        "unit": "TERABYTE"
       }
     }
   ],
-  "screen":  {
-    "size_inch":  16.859705,
-    "resolution":  {
-      "width":  2062,
-      "height":  1160
+  "screen": {
+    "size_inch": 16.095535,
+    "resolution": {
+      "width": 6126,
+      "height": 3446
     },
-    "panel":  "IPS",
-    "multitouch":  true
+    "panel": "IPS",
+    "multitouch": true
   },
-  "keyboard":  {
-    "layout":  "AZERTY",
-    "backlit":  false
+  "keyboard": {
+    "layout": "QUERTY",
+    "backlit": false
   },
-  "weight_kg":  1.3833291110523622,
-  "price_usd":  2396.098909420052,
-  "release_year":  2015,
-  "updated_at":  "2021-03-09T23:20:15.221335Z"
+  "weight_kg": 2.183990608781655,
+  "price_usd": 2668.8214373341407,
+  "release_year": 2017,
+  "updated_at": "2021-03-10T19:09:55.008244600Z"
 }

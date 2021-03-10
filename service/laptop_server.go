@@ -11,14 +11,20 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// The LaptopServer holds storage for Laptops and serves the methods
 type LaptopServer struct {
 	Store LaptopStore
+	pb.UnimplementedLaptopServiceServer
 }
 
-func NewLaptopServer() *LaptopServer {
-	return &LaptopServer{}
+// NewLaptopServer creates a new server objecz
+func NewLaptopServer(store LaptopStore) *LaptopServer {
+	return &LaptopServer{
+		Store: store,
+	}
 }
 
+// CreateLaptop creates and save a Laptop object into the server's store
 func (s *LaptopServer) CreateLaptop(
 	ctx context.Context,
 	r *pb.CreateLaptopRequest) (*pb.CreateLaptopResponse, error) {
