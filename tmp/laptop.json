@@ -1,25 +1,25 @@
 {
-  "id": "aac32be1-a1c6-4589-9f08-7709f983f444",
-  "name": "Dell Inspiron 3501 3501FI3UA1 Notebook",
-  "brand": "Dell",
+  "id": "caedc3dc-b31a-430d-bc0b-aef7e1a88955",
+  "name": "V15 82C500JFRM Notebook",
+  "brand": "Lenovo",
   "cpu": {
-    "brand": "AMD",
-    "name": "AMD Ryzen 7 4800HS",
-    "number_cores": 5,
+    "brand": "Intel",
+    "name": "Core i5-9500TE",
+    "number_cores": 8,
     "nnumber_threads": 11,
-    "min_ghz": 2.200248478411504,
-    "max_ghz": 4.319846113451695
+    "min_ghz": 3.269043983827016,
+    "max_ghz": 4.300566434565897
   },
   "ram": {
-    "value": "50",
+    "value": "35",
     "unit": "GIGYBYTE"
   },
   "gpus": [
     {
-      "brand": "AMD",
-      "name": "Radeon RX 5600 XT",
-      "min_ghz": 1.3492274327678329,
-      "max_ghz": 1.5643724274792987,
+      "brand": "NVIDIA",
+      "name": "GeForce GTX 1660 SUPER",
+      "min_ghz": 1.41619394092009,
+      "max_ghz": 1.8151128060821529,
       "memory": {
         "value": "4",
         "unit": "GIGYBYTE"
@@ -30,7 +30,7 @@
     {
       "driver": "SSD",
       "memory": {
-        "value": "757",
+        "value": "292",
         "unit": "GIGYBYTE"
       }
     },
@@ -43,20 +43,20 @@
     }
   ],
   "screen": {
-    "size_inch": 16.095535,
+    "size_inch": 13.962456,
     "resolution": {
-      "width": 6126,
-      "height": 3446
+      "width": 3445,
+      "height": 1938
     },
     "panel": "IPS",
-    "multitouch": true
+    "multitouch": false
   },
   "keyboard": {
-    "layout": "QUERTY",
-    "backlit": false
+    "layout": "QUERTZ",
+    "backlit": true
   },
-  "weight_kg": 2.183990608781655,
-  "price_usd": 2668.8214373341407,
-  "release_year": 2017,
-  "updated_at": "2021-03-10T19:09:55.008244600Z"
+  "weight_kg": 2.3354211348534553,
+  "price_usd": 2738.532908703298,
+  "release_year": 2019,
+  "updated_at": "2021-03-12T16:24:14.597901Z"
 }
