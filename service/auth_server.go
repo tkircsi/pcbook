@@ -10,11 +10,11 @@ import (
 
 type AuthServer struct {
 	userStore  UserStore
-	jwtManager *JWManager
+	jwtManager *JWTManager
 	pb.UnimplementedAuthServiceServer
 }
 
-func NewAuthServer(userStore UserStore, jwtManager *JWManager) *AuthServer {
+func NewAuthServer(userStore UserStore, jwtManager *JWTManager) *AuthServer {
 	return &AuthServer{
 		userStore:  userStore,
 		jwtManager: jwtManager,

@@ -8,7 +8,7 @@ import (
 )
 
 // JWTManager manages jwt token services
-type JWManager struct {
+type JWTManager struct {
 	secretKey     string
 	tokenDuration time.Duration
 }
@@ -21,15 +21,15 @@ type UserClaims struct {
 }
 
 // NewJWTManager return a new jwt manager
-func NewJWTManager(secretKey string, tokenDuration time.Duration) *JWManager {
-	return &JWManager{
+func NewJWTManager(secretKey string, tokenDuration time.Duration) *JWTManager {
+	return &JWTManager{
 		secretKey:     secretKey,
 		tokenDuration: tokenDuration,
 	}
 }
 
 // Generate generates and returns a jwt token for the user
-func (m *JWManager) Generate(user *User) (string, error) {
+func (m *JWTManager) Generate(user *User) (string, error) {
 	claims := UserClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(m.tokenDuration).Unix(),
@@ -43,7 +43,7 @@ func (m *JWManager) Generate(user *User) (string, error) {
 }
 
 // Verify verifies the token and returns user's claims
-func (m *JWManager) Verify(accessToken string) (*UserClaims, error) {
+func (m *JWTManager) Verify(accessToken string) (*UserClaims, error) {
 	token, err := jwt.ParseWithClaims(
 		accessToken,
 		&UserClaims{},

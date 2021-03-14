@@ -12,12 +12,12 @@ import (
 
 // AuthInterceptor is a server interceptor for authentication and authorization
 type AuthInterceptor struct {
-	jwtManager      *JWManager
+	jwtManager      *JWTManager
 	accessibleRoles map[string][]string
 }
 
 // NewAuthInterceptor creates a new AuthInterceptor object
-func NewAuthInterceptor(jwtManager *JWManager, accessibleRoles map[string][]string) *AuthInterceptor {
+func NewAuthInterceptor(jwtManager *JWTManager, accessibleRoles map[string][]string) *AuthInterceptor {
 	return &AuthInterceptor{
 		jwtManager:      jwtManager,
 		accessibleRoles: accessibleRoles,

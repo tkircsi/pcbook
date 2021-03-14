@@ -36,7 +36,7 @@ func main() {
 	laptopStore := service.NewInMemoryLaptopStore()
 	imageStore := service.NewDiskImageStore("img")
 	ratingStore := service.NewInMemoryRatingStore()
-	laptopServer := service.NewLaptopServer(laptopStore, imageStore, ratingStore)
+	laptopServer := service.NewLaptopServer(laptopStore, service.WithImageStore(imageStore), service.WithRatingStore(ratingStore))
 
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),

@@ -27,12 +27,33 @@ type LaptopServer struct {
 	pb.UnimplementedLaptopServiceServer
 }
 
+type LaptopServerOption func(*LaptopServer)
+
 // NewLaptopServer creates a new server objecz
-func NewLaptopServer(laptopStore LaptopStore, imageStore ImageStore, ratingStore RatingStore) *LaptopServer {
-	return &LaptopServer{
+//func NewLaptopServer(laptopStore LaptopStore, imageStore ImageStore, ratingStore RatingStore)
+func NewLaptopServer(laptopStore LaptopStore, opts ...LaptopServerOption) *LaptopServer {
+
+	newLaptopServer := &LaptopServer{
 		laptopStore: laptopStore,
-		imageStore:  imageStore,
-		ratingStore: ratingStore,
+		imageStore:  nil,
+		ratingStore: nil,
+	}
+
+	for _, opt := range opts {
+		opt(newLaptopServer)
+	}
+	return newLaptopServer
+}
+
+func WithImageStore(imageStore ImageStore) LaptopServerOption {
+	return func(l *LaptopServer) {
+		l.imageStore = imageStore
+	}
+}
+
+func WithRatingStore(ratingStore RatingStore) LaptopServerOption {
+	return func(l *LaptopServer) {
+		l.ratingStore = ratingStore
 	}
 }
 

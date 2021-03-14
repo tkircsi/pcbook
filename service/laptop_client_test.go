@@ -232,7 +232,7 @@ func TestClientSearchLaptop(t *testing.T) {
 }
 
 func startTestLaptopServer(t *testing.T, laptopStore service.LaptopStore, imageStore service.ImageStore, ratingStore service.RatingStore) string {
-	laptopServer := service.NewLaptopServer(laptopStore, imageStore, ratingStore)
+	laptopServer := service.NewLaptopServer(laptopStore, service.WithImageStore(imageStore), service.WithRatingStore(ratingStore))
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterLaptopServiceServer(grpcServer, laptopServer)
