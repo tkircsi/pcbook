@@ -5,7 +5,7 @@ rm *.pem
 # openssl req -x509 -newkey rsa:4096 -days 365 -keyout ca-key.pem -out ca-cert.pem
 echo ""
 echo "Generate CA's private key and certification"
-openssl req -x509 -newkey rsa:4096 -days 365 -keyout ca-key.pem -out ca-cert.pem -subj "/C=HU/ST=Hungary/L=Budapest/O=Tibor Kircsi/OU=R&D/CN=*.tkircsi.net/emailAddress=tkircsi@gmail.com" -nodes
+openssl req -x509 -sha256 -newkey rsa:4096 -days 365 -keyout ca-key.pem -out ca-cert.pem -subj "/C=HU/ST=Hungary/L=Budapest/O=Tibor Kircsi/OU=R&D/CN=*.tkircsi.net/emailAddress=tkircsi@gmail.com" -nodes
 # -nodes : does not ask for passphrase
 
 echo ""
@@ -20,7 +20,7 @@ openssl req -newkey rsa:4096 -keyout server-key.pem -out server-req.pem -subj "/
 
 # 3. Use CA's private key to sign web server's CSR and get back the signed certificate
 echo "Genereate the server's signed certificate"
-openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -days 60 -extfile server-ext.cnf
+openssl x509 -req -sha256 -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -days 60 -extfile server-ext.cnf
 
 echo "Server signed certificate"
 openssl x509 -in server-cert.pem -noout -text
@@ -38,7 +38,7 @@ openssl req -newkey rsa:4096 -keyout client-key.pem -out client-req.pem -subj "/
 
 # 6. Use CA's private key to sign web server's CSR and get back the signed certificate
 echo "Genereate the clients's signed certificate"
-openssl x509 -req -in client-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out client-cert.pem -days 60 -extfile client-ext.cnf
+openssl x509 -req -sha256 -in client-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out client-cert.pem -days 60 -extfile client-ext.cnf
 
 echo "Client signed certificate"
 openssl x509 -in client-cert.pem -noout -text
