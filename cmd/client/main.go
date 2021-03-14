@@ -31,7 +31,8 @@ func main() {
 	}
 
 	authClient := client.NewAuthClient(cc1, username, password)
-	interceptor, err := client.NewAuthInterceptor(authClient, authMethods(), refreshDuration)
+	//interceptor, err := client.NewAuthInterceptor(authClient, authMethods(), refreshDuration)
+	interceptor, err := client.NewAuthInterceptor(authClient, client.WithAuthMethods(authMethods()), client.WithTokenRefreshDuration(refreshDuration))
 	if err != nil {
 		log.Fatal("cannot create auth interceptor: ", err)
 	}

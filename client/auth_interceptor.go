@@ -11,35 +11,53 @@ import (
 
 // AuthInterceptor is a client interceptor for authentication
 type AuthInterceptor struct {
-	authClient  *AuthClient
-	authMethods map[string]bool
-	accessToken string
+	authClient      *AuthClient
+	authMethods     map[string]bool
+	accessToken     string
+	refreshDuration time.Duration
 }
+
+type AuthInterceptorOption func(*AuthInterceptor)
 
 func NewAuthInterceptor(
 	authClient *AuthClient,
-	authMethods map[string]bool,
-	refreshDuration time.Duration,
+	opts ...AuthInterceptorOption,
 ) (*AuthInterceptor, error) {
 	interceptor := &AuthInterceptor{
-		authClient:  authClient,
-		authMethods: authMethods,
+		authClient:      authClient,
+		refreshDuration: 60 * time.Second, // the default is 60s
 	}
 
-	err := interceptor.scheduleRefreshToken(refreshDuration)
+	for _, opt := range opts {
+		opt(interceptor)
+	}
+
+	err := interceptor.scheduleRefreshToken()
 	if err != nil {
 		return nil, err
 	}
 	return interceptor, nil
 }
 
-func (ai *AuthInterceptor) scheduleRefreshToken(refreshDuration time.Duration) error {
+func WithAuthMethods(authMethods map[string]bool) AuthInterceptorOption {
+	return func(ai *AuthInterceptor) {
+		ai.authMethods = authMethods
+	}
+}
+
+func WithTokenRefreshDuration(refreshDuration time.Duration) AuthInterceptorOption {
+	return func(ai *AuthInterceptor) {
+		ai.refreshDuration = refreshDuration
+	}
+}
+
+func (ai *AuthInterceptor) scheduleRefreshToken() error {
 	err := ai.refreshToken()
 	if err != nil {
 		return err
 	}
 	go func() {
-		wait := refreshDuration
+		wait := ai.refreshDuration
 		tk := time.NewTicker(wait)
 		for {
 			<-tk.C
