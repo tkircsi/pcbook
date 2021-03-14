@@ -1,9 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -11,6 +14,7 @@ import (
 	"github.com/tkircsi/pcbook/pb"
 	"github.com/tkircsi/pcbook/samples"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const (
@@ -23,9 +27,16 @@ func main() {
 	serverAddress := flag.String("address", "", "the server address")
 	flag.Parse()
 
+	tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		log.Fatal("cannot load TLS credentials")
+	}
+
 	log.Printf("dial server %s", *serverAddress)
 
-	cc1, err := grpc.Dial(*serverAddress, grpc.WithInsecure())
+	cc1, err := grpc.Dial(
+		*serverAddress,
+		grpc.WithTransportCredentials(tlsCredentials))
 	if err != nil {
 		log.Fatal("cannot dial server: ", err)
 	}
@@ -39,7 +50,7 @@ func main() {
 
 	cc2, err := grpc.Dial(
 		*serverAddress,
-		grpc.WithInsecure(),
+		grpc.WithTransportCredentials(tlsCredentials),
 		grpc.WithUnaryInterceptor(interceptor.Unary()),
 		grpc.WithStreamInterceptor(interceptor.Stream()),
 	)
@@ -50,6 +61,32 @@ func main() {
 	//testUploadImage(laptopClient)
 	testRateLaptop(laptopClient)
 
+}
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// Load the certificate of the CA who signed the certificate of the server
+	caCert, err := os.ReadFile("cert/ca-cert.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(caCert) {
+		return nil, fmt.Errorf("failed to add server's CA certificate")
+	}
+
+	// Load client certificate and private key
+	clientCert, err := tls.LoadX509KeyPair("cert/client-cert.pem", "cert/client-key.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	config := &tls.Config{
+		Certificates: []tls.Certificate{clientCert},
+		RootCAs:      certPool,
+	}
+
+	return credentials.NewTLS(config), nil
 }
 
 func authMethods() map[string]bool {

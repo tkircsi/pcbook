@@ -8,9 +8,12 @@ server:
 	go run cmd/server/main.go -port 5000
 
 client:
-	go run cmd/client/main.go -address localhost:5000
+	go run cmd/client/main.go -address 0.0.0.0:5000
 
 test:
 	go test -cover -race ./...
 
-.PHONY: gen clean server client test
+cert:
+	cd cert; ./gen.sh; cd ..
+
+.PHONY: gen clean server client test cert
