@@ -1,15 +1,18 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"time"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/tkircsi/pcbook/pb"
 	"github.com/tkircsi/pcbook/service"
 	"google.golang.org/grpc"
@@ -20,13 +23,22 @@ import (
 const (
 	secretKey     = "MySecretKey"
 	tokenDuration = 15 * time.Minute
+	serverCert    = "cert/server-cert.pem"
+	serverKey     = "cert/server-key.pem"
+	caCert        = "cert/ca-cert.pem"
+)
+
+var (
+	port       *int
+	enableTls  *bool
+	serverType *string
 )
 
 func main() {
-	port := flag.Int("port", 0, "the server port")
-	enableTls := flag.Bool("tls", false, "enable SSL/TLS")
+	port = flag.Int("port", 0, "the server port")
+	enableTls = flag.Bool("tls", false, "enable SSL/TLS")
+	serverType = flag.String("type", "grpc", "type of server (grpc/rest/both)")
 	flag.Parse()
-	log.Printf("server started on port %d, TLS = %t", *port, *enableTls)
 
 	userStore := service.NewInMemoryUserStore()
 	err := seedUsers(userStore)
@@ -36,13 +48,34 @@ func main() {
 
 	jwtManager := service.NewJWTManager(secretKey, tokenDuration)
 	authServer := service.NewAuthServer(userStore, jwtManager)
-	interceptor := service.NewAuthInterceptor(jwtManager, accessibleRoles())
 
 	laptopStore := service.NewInMemoryLaptopStore()
 	imageStore := service.NewDiskImageStore("img")
 	ratingStore := service.NewInMemoryRatingStore()
 	laptopServer := service.NewLaptopServer(laptopStore, service.WithImageStore(imageStore), service.WithRatingStore(ratingStore))
 
+	address := fmt.Sprintf("0.0.0.0:%d", *port)
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		log.Fatal("cannot start server", err)
+	}
+
+	if *serverType == "grpc" {
+		err = runGRPCServer(jwtManager, authServer, laptopServer, listener)
+	} else if *serverType == "rest" {
+		err = runRESTServer(jwtManager, authServer, laptopServer, listener)
+	} else {
+		// both
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+func runGRPCServer(jwtManager *service.JWTManager, authServer *service.AuthServer, laptopServer *service.LaptopServer, listener net.Listener) error {
+
+	interceptor := service.NewAuthInterceptor(jwtManager, accessibleRoles())
 	serverOptions := []grpc.ServerOption{
 		grpc.UnaryInterceptor(interceptor.Unary()),
 		grpc.StreamInterceptor(interceptor.Stream()),
@@ -51,7 +84,7 @@ func main() {
 	if *enableTls {
 		tlsCredentials, err := loadTLSCredentials()
 		if err != nil {
-			log.Fatal("cannot load TLS credentials", err)
+			return fmt.Errorf("cannot load TLS credentials: %v", err)
 		}
 		serverOptions = append(serverOptions, grpc.Creds(tlsCredentials))
 	}
@@ -63,22 +96,37 @@ func main() {
 
 	reflection.Register(grpcServer)
 
-	address := fmt.Sprintf("0.0.0.0:%d", *port)
-	listener, err := net.Listen("tcp", address)
+	log.Printf("gRPC server started at %s, TLS = %t", listener.Addr().String(), *enableTls)
+	return grpcServer.Serve(listener)
+}
+
+func runRESTServer(jwtManager *service.JWTManager, authServer *service.AuthServer, laptopServer *service.LaptopServer, listener net.Listener) error {
+
+	mux := runtime.NewServeMux()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	err := pb.RegisterAuthServiceHandlerServer(ctx, mux, authServer)
 	if err != nil {
-		log.Fatal("cannot start server", err)
+		return err
 	}
 
-	err = grpcServer.Serve(listener)
+	err = pb.RegisterLaptopServiceHandlerServer(ctx, mux, laptopServer)
 	if err != nil {
-		log.Fatal("cannot start server", err)
+		return err
 	}
 
+	log.Printf("REST server started at %s, TLS = %t", listener.Addr().String(), *enableTls)
+
+	if *enableTls {
+		return http.ServeTLS(listener, mux, serverCert, serverKey)
+	}
+	return http.Serve(listener, mux)
 }
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	// Load the certificate of the CA who signed the certificate of the client
-	caCert, err := os.ReadFile("cert/ca-cert.pem")
+	caCert, err := os.ReadFile(caCert)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +137,7 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	}
 
 	// Load server certificate and private key
-	serverCert, err := tls.LoadX509KeyPair("cert/server-cert.pem", "cert/server-key.pem")
+	serverCert, err := tls.LoadX509KeyPair(serverCert, serverKey)
 	if err != nil {
 		return nil, err
 	}

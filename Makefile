@@ -1,13 +1,16 @@
 TLS_ENABLED ?= false
 
 gen:
-	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative proto/*.proto
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative --grpc-gateway_out=pb --openapiv2_out=swagger proto/*.proto
 
 clean:
 	rm pb/*.go
 
 server:
 	go run cmd/server/main.go -port 5000 -tls=${TLS_ENABLED}
+
+rest-server:
+	go run cmd/server/main.go -port 5000 -tls=${TLS_ENABLED} -type=rest
 
 server1:
 	go run cmd/server/main.go -port 50051 -tls=${TLS_ENABLED}
